@@ -12,11 +12,16 @@ export class ShapeDrawerDirective {
   private quadrilateral: Quadrilateral = new Quadrilateral(new Point(0, 0), new Point(0, 0), new Point(0, 0), new Point(0, 0),);
 
   //描点颜色
-  private pointColor = '#F93D0B';
+  private pointColor: string = '#F93D0B';
   //描点宽度
-  private pointWidth = 10;
+  private pointWidth: number = 10;
   //描点高度
-  private pointHeight = 10;
+  private pointHeight: number = 10;
+  //线
+  private linewidth: number = 2;
+  private lineColor: string = '#F93D0B';
+  //填充
+  private fillStyle: string = 'rgba(255,255,255,0.77)';
 
   constructor(private el: ElementRef) {
     this.canvas = el.nativeElement;
@@ -40,10 +45,50 @@ export class ShapeDrawerDirective {
 
   public drawQuadrilateral(ctx: CanvasRenderingContext2D): void {
     ctx.fillStyle = this.pointColor;
+    ctx.lineWidth = this.linewidth;
+    ctx.strokeStyle = this.lineColor;
+    ctx.fillStyle = this.fillStyle;
+
     //清空画布
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    //描画矩形
-    ctx.fillRect(this.quadrilateral.pointOne.x, this.quadrilateral.pointOne.y, this.pointWidth, this.pointHeight);
+
+    //描画第一个点
+    if (!this.quadrilateral.pointOne.isEmpty()) {
+      ctx.fillRect(this.quadrilateral.pointOne.x, this.quadrilateral.pointOne.y, this.pointWidth, this.pointHeight);
+    }
+    //描画第二个点 和 线
+    if (!this.quadrilateral.pointTwo.isEmpty()) {
+      ctx.fillRect(this.quadrilateral.pointTwo.x, this.quadrilateral.pointTwo.y, this.pointWidth, this.pointHeight);
+      ctx.beginPath();
+      ctx.moveTo(this.quadrilateral.pointOne.x, this.quadrilateral.pointOne.y);
+      ctx.lineTo(this.quadrilateral.pointTwo.x, this.quadrilateral.pointTwo.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    //描画第三个点
+    if (!this.quadrilateral.pointThree.isEmpty()) {
+      ctx.fillRect(this.quadrilateral.pointThree.x, this.quadrilateral.pointThree.y, this.pointWidth, this.pointHeight);
+      ctx.beginPath();
+      ctx.moveTo(this.quadrilateral.pointTwo.x, this.quadrilateral.pointTwo.y);
+      ctx.lineTo(this.quadrilateral.pointThree.x, this.quadrilateral.pointThree.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
+
+    //描画第四个点
+    if (!this.quadrilateral.pointFour.isEmpty()) {
+      ctx.fillRect(this.quadrilateral.pointFour.x, this.quadrilateral.pointFour.y, this.pointWidth, this.pointHeight);
+      ctx.beginPath();
+      ctx.moveTo(this.quadrilateral.pointThree.x, this.quadrilateral.pointThree.y);
+      ctx.lineTo(this.quadrilateral.pointFour.x, this.quadrilateral.pointFour.y);
+      ctx.lineTo(this.quadrilateral.pointOne.x, this.quadrilateral.pointOne.y);
+      //为了保证封闭填充.fill(),此处画了一条已经存在的线
+      ctx.lineTo(this.quadrilateral.pointTwo.x, this.quadrilateral.pointTwo.y);
+      ctx.stroke();
+      ctx.fill();
+      ctx.closePath();
+    }
   }
 }
 
