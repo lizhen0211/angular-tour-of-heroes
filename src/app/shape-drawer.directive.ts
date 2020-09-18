@@ -39,7 +39,9 @@ export class ShapeDrawerDirective {
     /*console.log(event.target);
     console.log(event.x);
     console.log(event.offsetX);*/
+    //添加鼠标点
     this.quadrilateral.addPoint(event.offsetX, event.offsetY);
+    //描画四边形
     this.drawQuadrilateral(this.context);
   }
 
@@ -47,7 +49,6 @@ export class ShapeDrawerDirective {
     ctx.fillStyle = this.pointColor;
     ctx.lineWidth = this.linewidth;
     ctx.strokeStyle = this.lineColor;
-    ctx.fillStyle = this.fillStyle;
 
     //清空画布
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -86,9 +87,11 @@ export class ShapeDrawerDirective {
       //为了保证封闭填充.fill(),此处画了一条已经存在的线
       ctx.lineTo(this.quadrilateral.pointTwo.x, this.quadrilateral.pointTwo.y);
       ctx.stroke();
+      ctx.fillStyle = this.fillStyle;
       ctx.fill();
       ctx.closePath();
     }
+    ctx.restore();
   }
 }
 
@@ -144,6 +147,13 @@ class Quadrilateral {
     return !this.pointOne.isEmpty() && !this.pointTwo.isEmpty() && !this.pointThree.isEmpty() && !this.pointFour.isEmpty();
   }
 
+  public clear(): void {
+    this.pointOne.reset();
+    this.pointTwo.reset();
+    this.pointThree.reset();
+    this.pointFour.reset();
+  }
+
   public addPoint(x, y): void {
     if (!this.isFull()) {
       if (this.pointOne.isEmpty()) {
@@ -165,6 +175,12 @@ class Quadrilateral {
       }
     } else {
       console.log("Quadrilateral is full");
+      //清空
+      this.clear();
+      //给第一个点赋值
+      this.pointOne.x = x;
+      this.pointOne.y = y;
+      console.log("pointOne is" + this.pointOne.toString())
     }
   }
 }
@@ -199,6 +215,11 @@ class Point {
 
   public isEmpty(): boolean {
     return this.x == 0 && this.y == 0;
+  }
+
+  public reset(): void {
+    this.x = 0;
+    this.y = 0;
   }
 
   public toString(): string {
