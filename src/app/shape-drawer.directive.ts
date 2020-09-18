@@ -36,9 +36,6 @@ export class ShapeDrawerDirective {
   @HostListener('mouseup', ['$event'])
   onMouseUp(event): void {
     console.log("mouseup")
-    /*console.log(event.target);
-    console.log(event.x);
-    console.log(event.offsetX);*/
     //添加鼠标点
     this.quadrilateral.addPoint(event.offsetX, event.offsetY);
     //描画四边形
@@ -177,10 +174,6 @@ class Quadrilateral {
       console.log("Quadrilateral is full");
       //清空
       this.clear();
-      //给第一个点赋值
-      this.pointOne.x = x;
-      this.pointOne.y = y;
-      console.log("pointOne is" + this.pointOne.toString())
     }
   }
 }
